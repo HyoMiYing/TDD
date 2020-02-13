@@ -16,4 +16,6 @@ class Item(models.Model):
     list = models.ForeignKey(List, default=None)
 
     class Meta:
+        ordering: ('id',)
+        order_with_respect_to = 'list'
         unique_together = ('list', 'text')
