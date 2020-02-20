@@ -4,6 +4,7 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import WebDriverException
 import time
+from .management.commands.create_session import create_pre_authenticated_session
 from .server_tools import reset_database
 
 MAX_WAIT = 10
