@@ -1,8 +1,9 @@
 from selenium import webdriver
 from .base import FunctionalTest
-from .management.commands.create_session import create_pre_authenticated_session
 from .list_page import ListPage
 from .my_lists_page import MyListsPage
+
+import time
 
 def quit_if_possible(browser):
     try: browser.quit()
@@ -12,7 +13,7 @@ class SharingTest(FunctionalTest):
 
     def test_can_share_a_list_with_another_user(self):
         # Edith is a logged-in user
-        create_pre_authenticated_session('edith@example.com')
+        self.create_pre_authenticated_session('edith@example.com')
         edith_browser = self.browser
         self.addCleanup(lambda: quit_if_possible(edith_browser))
 
@@ -20,7 +21,7 @@ class SharingTest(FunctionalTest):
         oni_browser = webdriver.Firefox()
         self.addCleanup(lambda: quit_if_possible(oni_browser))
         self.browser = oni_browser
-        create_pre_authenticated_session('oniciferous@example.com')
+        self.create_pre_authenticated_session('oniciferous@example.com')
 
         # Edith goes to the home page and starts a list
         self.browser = edith_browser
@@ -43,6 +44,7 @@ class SharingTest(FunctionalTest):
         MyListsPage(self).go_to_my_lists_page()
 
         # He sees Edith's list in there!
+        time.sleep(2)
         self.browser.find_element_by_link_text('Get help').click()
 
         # On the list page, Oniciferous can see says that it's Edith's list
@@ -57,4 +59,4 @@ class SharingTest(FunctionalTest):
         # When Edith refreshes the page, she sees Oniciferous's addition
         self.browser = edith_browser
         self.browser.refresh()
-        list_page.wait_for_row_in_list_table('Hi Edith', 2)
+        list_page.wait_for_row_in_list_table('Hi Edith!', 2)
